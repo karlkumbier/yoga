@@ -176,9 +176,10 @@ See the [Gemini TTS documentation](https://ai.google.dev/gemini-api/docs/speech-
 yoga/
 ├── yoga_agent.py          # Main script
 ├── requirements.txt       # Python dependencies
-├── sample_session.txt     # Example session
-├── yin_1.txt             # Example yin yoga session
-└── README.md             # This file
+├── README.md             # This file
+└── sessions/             # Yoga session files
+    ├── test_session.txt  # Basic example session
+    └── yin_1.txt         # Example yin yoga session
 ```
 
 ## License
