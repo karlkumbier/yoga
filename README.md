@@ -1,12 +1,12 @@
 # Yoga Session AI Agent
 
-An AI-powered yoga instructor that converts text-based yoga session descriptions into spoken audio with proper timing and pauses. The agent uses Google's Gemini TTS API to generate natural-sounding speech with various voice options.
+An AI-powered yoga instructor that converts JSON-based yoga session descriptions into spoken audio with proper timing and pauses. The agent uses Google's Gemini TTS API to generate natural-sounding speech with various voice options.
 
 ## Features
 
 - **Text-to-Speech Conversion**: Converts yoga session descriptions to natural speech using Gemini TTS
-- **Timed Holds**: Automatically handles pause instructions like `<hold 1 minute>`
-- **Voice Selection**: Choose from 30+ different voices (Aoede, Kore, Puck, etc.)
+- **Structured Sessions**: Uses JSON format for precise control of voice, text, and timing
+- **Voice Selection**: Choose from 30+ different voices (Aoede, Kore, Puck, etc.) per statement
 - **Asynchronous Processing**: Pre-processes upcoming segments during holds and audio playback
 - **Configurable Buffer**: Adjustable number of segments to process ahead of time
 
@@ -47,103 +47,126 @@ An AI-powered yoga instructor that converts text-based yoga session descriptions
 
 ### Basic Usage
 ```bash
-python yoga_agent.py <session_file.txt>
+python yoga_agent.py <session_file.json>
 ```
 
 ### With Custom Buffer Size
 ```bash
-python yoga_agent.py <session_file.txt> <buffer_size>
+python yoga_agent.py <session_file.json> <buffer_size>
 ```
 
 Example:
 ```bash
-python yoga_agent.py yin_1.txt 3
+python yoga_agent.py sessions/example_session.json 3
 ```
 
 ## Session Document Format
 
-Create a text file describing your yoga session. The agent will read this aloud and pause at specified intervals.
+Create a JSON file describing your yoga session. The agent will read statements aloud and pause at specified intervals.
 
-### Basic Structure
+### JSON Structure
+
+Each session is a JSON array of statement objects. Each statement must have these keys:
+
+- **`voice`**: Voice style instruction (e.g., "Speak as a yoga instructor...") or empty string for pauses
+- **`text`**: The words to speak, or empty string for pauses
+- **`time`**: Duration in seconds for the statement
+
+The `voice` field contains instructions for how the text should be spoken, not the name of a specific voice. The system uses a default voice (Algieba) but applies the style instructions from this field.
+
+### Basic Example
+```json
+[
+    {
+        "voice": "Speak as a yoga instructor running a relaxing session. Use a soft, gentle voice just above a whisper and without strong emphasis on words",
+        "text": "Welcome to your yoga session. Let's begin with some breathing.",
+        "time": 5
+    },
+    {
+        "voice": "Speak as a yoga instructor running a relaxing session. Use a calm, encouraging tone with clear guidance", 
+        "text": "Take a deep breath in and slowly exhale.",
+        "time": 4
+    },
+    {
+        "voice": "",
+        "text": "",
+        "time": 30
+    },
+    {
+        "voice": "Speak as a yoga instructor running a relaxing session. Use a soft, gentle voice just above a whisper and without strong emphasis on words",
+        "text": "Now move into mountain pose. Stand tall with feet hip-width apart.",
+        "time": 6
+    }
+]
 ```
-Welcome to your yoga session. Let's begin with some breathing.
 
-Take a deep breath in and slowly exhale.
+### Pause/Hold Statements
 
-<hold 30 seconds>
+To create pauses between spoken instructions, use empty text:
 
-Now move into mountain pose. Stand tall with feet hip-width apart.
-
-<hold 1 minute>
-
-Transition to forward fold. Let your arms hang heavy.
-
-<hold 45 seconds>
-
-Great work! This completes our session.
+```json
+{
+    "voice": "",
+    "text": "",
+    "time": 120
+}
 ```
 
-### Hold Instructions
-
-Use the following format for pauses:
-
-- `<hold X seconds>` - Hold for X seconds
-- `<hold X second>` - Hold for X seconds (singular)
-- `<hold X minutes>` - Hold for X minutes  
-- `<hold X minute>` - Hold for X minutes (singular)
-
-Examples:
-- `<hold 30 seconds>`
-- `<hold 1 minute>`
-- `<hold 2 minutes>`
-- `<hold 45 seconds>`
+This creates a 2-minute pause without any speech.
 
 ### Tips for Writing Sessions
 
-1. **Keep segments concise**: Each narration block should be 1-3 sentences
+1. **Keep segments concise**: Each text block should be 1-3 sentences
 2. **Use descriptive language**: Help practitioners visualize the poses
 3. **Include breathing cues**: Remind students to breathe naturally
-4. **Vary hold times**: Mix shorter and longer holds as appropriate
+4. **Vary hold times**: Mix shorter and longer pauses as appropriate
 5. **Add transitions**: Guide smoothly between poses
+6. **Customize voice styles**: You can use different voice instructions for variety or emphasis
 
 ### Example Session Structure
 
+```json
+[
+    {
+        "voice": "Speak as a yoga instructor running a relaxing session. Use a soft, gentle voice just above a whisper and without strong emphasis on words",
+        "text": "Welcome to today's yin yoga session. Find your comfortable seated position.",
+        "time": 5
+    },
+    {
+        "voice": "",
+        "text": "",
+        "time": 30
+    },
+    {
+        "voice": "Speak as a yoga instructor running a relaxing session. Use a calm, encouraging tone with clear guidance",
+        "text": "Begin to fold forward from your hips, letting your spine round naturally.",
+        "time": 7
+    },
+    {
+        "voice": "",
+        "text": "",
+        "time": 180
+    },
+    {
+        "voice": "Speak as a yoga instructor running a relaxing session. Use a soft, gentle voice just above a whisper and without strong emphasis on words",
+        "text": "Slowly begin to roll up, vertebra by vertebra.",
+        "time": 5
+    }
+]
 ```
-# Opening (30-60 seconds of speech)
-Welcome and intention setting
 
-<hold 30 seconds>
+## Voice Style Options
 
-# Warm-up (multiple short segments)
-Gentle movement instructions
+The `voice` field in your JSON statements contains instructions for how the text should be spoken. You can customize these instructions to create different moods or emphasis. Some examples:
 
-<hold 1 minute>
-
-# Main poses (longer holds)
-Detailed pose instructions with alignment cues
-
-<hold 2 minutes>
-
-# Transitions
-Movement between poses
-
-<hold 45 seconds>
-
-# Closing
-Final relaxation and closing thoughts
-```
+- **Default gentle style**: "Speak as a yoga instructor running a relaxing session. Use a soft, gentle voice just above a whisper and without strong emphasis on words"
+- **Encouraging guidance**: "Speak as a yoga instructor running a relaxing session. Use a calm, encouraging tone with clear guidance" 
+- **Meditative style**: "Speak as a yoga instructor in a meditative session. Use a very slow, peaceful voice with long pauses between words"
+- **Energizing style**: "Speak as a yoga instructor leading an energizing session. Use a warm, motivating tone with gentle enthusiasm"
 
 ## Voice Options
 
-The agent supports 30+ different voices. Popular choices include:
-
-- **Aoede** - Breezy, natural
-- **Kore** - Firm, clear
-- **Puck** - Upbeat, energetic
-- **Charon** - Informative, steady
-- **Fenrir** - Excitable, dynamic
-
-To use a different voice, modify the `voice` parameter in the `gemini_tts()` function.
+The system uses Google's Gemini TTS with the Algieba voice by default. However, you can control the speaking style through the `voice` field in your JSON statements, which contains instructions for tone, pace, and emphasis.
 
 ## Troubleshooting
 
@@ -174,12 +197,13 @@ See the [Gemini TTS documentation](https://ai.google.dev/gemini-api/docs/speech-
 
 ```
 yoga/
-├── yoga_agent.py          # Main script
-├── requirements.txt       # Python dependencies
-├── README.md             # This file
-└── sessions/             # Yoga session files
-    ├── test_session.txt  # Basic example session
-    └── yin_1.txt         # Example yin yoga session
+├── yoga_agent.py              # Main script
+├── requirements.txt           # Python dependencies
+├── README.md                 # This file
+└── sessions/                 # Yoga session files
+    ├── example_session.json  # Basic example session (JSON format)
+    ├── test_session.txt      # Legacy text format (deprecated)
+    └── yin_1.txt             # Legacy yin yoga session (deprecated)
 ```
 
 ## License
