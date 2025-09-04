@@ -2,31 +2,16 @@
     {
         "voice": "Speak as a yoga instructor running a relaxing session. Use a soft, gentle voice just above a whisper and without strong emphasis on words",
         "text": "Welcome to today's gentle yin yoga session. Find a comfortable seated position on your mat, and take a deep breath in through your nose.",
-        "time": 5
+        "time": "5 seconds"
+    },
+    {
+        "voice": "",
+        "text": "",
+        "time": "10 seconds"
     },
     {
         "voice": "Speak as a yoga instructor running a relaxing session. Use a soft, gentle voice just above a whisper and without strong emphasis on words", 
         "text": "Now slowly exhale through your mouth, releasing any tension from your day.",
-        "time": 3
-    },
-    {
-        "voice": "",
-        "text": "",
-        "time": 10
-    },
-    {
-        "voice": "Speak as a yoga instructor running a relaxing session. Use a calm, encouraging tone with clear guidance",
-        "text": "Bring the soles of your feet together in front of you, allowing your knees to fall apart into Butterfly pose. Hold onto your feet or ankles, whatever feels comfortable.",
-        "time": 8
-    },
-    {
-        "voice": "",
-        "text": "",
-        "time": 180
-    },
-    {
-        "voice": "Speak as a yoga instructor running a relaxing session. Use a soft, gentle voice just above a whisper and without strong emphasis on words",
-        "text": "Slowly begin to roll up, vertebra by vertebra. Take a moment to notice how your body feels after this gentle opening.",
-        "time": 6
+        "time": "3 seconds"
     }
 ]

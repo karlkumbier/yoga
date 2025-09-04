@@ -47,17 +47,43 @@ An AI-powered yoga instructor that converts JSON-based yoga session descriptions
 
 ### Basic Usage
 ```bash
-python yoga_agent.py <session_file.json>
+python yoga_agent.py session.json
 ```
 
-### With Custom Buffer Size
+### Command Line Options
+
 ```bash
-python yoga_agent.py <session_file.json> <buffer_size>
+python yoga_agent.py [-h] [--buffer-size BUFFER_SIZE] [--output-dir OUTPUT_DIR] session_file
 ```
 
-Example:
+**Arguments:**
+- `session_file`: JSON file containing yoga session statements
+
+**Options:**
+- `-h, --help`: Show help message and exit
+- `--buffer-size, -b BUFFER_SIZE`: Number of segments to process ahead of playback (default: 2)
+- `--output-dir, -o OUTPUT_DIR`: Directory to save audio files as seg_0.wav, seg_1.wav, etc.
+
+### Examples
+
+**Run a basic session:**
 ```bash
-python yoga_agent.py sessions/example_session.json 3
+python yoga_agent.py sessions/example_session.json
+```
+
+**Increase processing buffer for smoother playback:**
+```bash
+python yoga_agent.py sessions/example_session.json --buffer-size 4
+```
+
+**Save audio files for later use:**
+```bash
+python yoga_agent.py sessions/example_session.json --output-dir ./audio_files
+```
+
+**Combine options:**
+```bash
+python yoga_agent.py sessions/example_session.json -b 3 -o ./session_audio
 ```
 
 ## Session Document Format
@@ -183,6 +209,22 @@ The system uses Google's Gemini TTS with the Algieba voice by default. However, 
 - **Playback**: Any format supported by FFmpeg
 
 ## Advanced Configuration
+
+### Audio File Output
+When using the `--output-dir` option, audio files are saved with descriptive names:
+- **Naming**: Files are saved as `seg_0.wav`, `seg_1.wav`, etc.
+- **Order**: Numbers correspond to narration segments in sequence (hold/pause segments don't generate audio files)
+- **Reuse**: Saved files can be played later without regenerating
+- **Quality**: Same high-quality WAV format (24kHz, 16-bit, mono)
+
+**Example workflow:**
+```bash
+# Generate and save audio files
+python yoga_agent.py session.json --output-dir ./my_session
+
+# Files created: ./my_session/seg_0.wav, ./my_session/seg_1.wav, etc.
+# You can now play these files independently or reuse them
+```
 
 ### Buffer Size
 The buffer size determines how many segments are pre-processed:
