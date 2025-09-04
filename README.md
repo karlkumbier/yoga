@@ -96,7 +96,7 @@ Each session is a JSON array of statement objects. Each statement must have thes
 
 - **`voice`**: Voice style instruction (e.g., "Speak as a yoga instructor...") or empty string for pauses
 - **`text`**: The words to speak, or empty string for pauses
-- **`time`**: Duration in seconds for the statement
+- **`time`**: Duration as a string with units (e.g., "30 seconds", "2 minutes") or number (assumed to be seconds)
 
 The `voice` field contains instructions for how the text should be spoken, not the name of a specific voice. The system uses a default voice (Algieba) but applies the style instructions from this field.
 
@@ -106,22 +106,22 @@ The `voice` field contains instructions for how the text should be spoken, not t
     {
         "voice": "Speak as a yoga instructor running a relaxing session. Use a soft, gentle voice just above a whisper and without strong emphasis on words",
         "text": "Welcome to your yoga session. Let's begin with some breathing.",
-        "time": 5
+        "time": "5 seconds"
     },
     {
         "voice": "Speak as a yoga instructor running a relaxing session. Use a calm, encouraging tone with clear guidance", 
         "text": "Take a deep breath in and slowly exhale.",
-        "time": 4
+        "time": "4 seconds"
     },
     {
         "voice": "",
         "text": "",
-        "time": 30
+        "time": "30 seconds"
     },
     {
         "voice": "Speak as a yoga instructor running a relaxing session. Use a soft, gentle voice just above a whisper and without strong emphasis on words",
         "text": "Now move into mountain pose. Stand tall with feet hip-width apart.",
-        "time": 6
+        "time": "6 seconds"
     }
 ]
 ```
@@ -134,11 +134,27 @@ To create pauses between spoken instructions, use empty text:
 {
     "voice": "",
     "text": "",
-    "time": 120
+    "time": "2 minutes"
 }
 ```
 
 This creates a 2-minute pause without any speech.
+
+### Time Format Options
+
+The `time` field accepts several formats:
+- **String with units**: `"30 seconds"`, `"2 minutes"`, `"1 minute"`, `"45 seconds"`
+- **Numbers**: `30` (interpreted as seconds), `120` (interpreted as seconds)
+- **Flexible units**: Both singular and plural forms work (`"1 second"` or `"1 seconds"`)
+
+**Examples:**
+```json
+"time": "30 seconds"    // 30 seconds
+"time": "2 minutes"     // 120 seconds  
+"time": "1 minute"      // 60 seconds
+"time": 45              // 45 seconds
+"time": "90"            // 90 seconds
+```
 
 ### Tips for Writing Sessions
 
@@ -149,37 +165,6 @@ This creates a 2-minute pause without any speech.
 5. **Add transitions**: Guide smoothly between poses
 6. **Customize voice styles**: You can use different voice instructions for variety or emphasis
 
-### Example Session Structure
-
-```json
-[
-    {
-        "voice": "Speak as a yoga instructor running a relaxing session. Use a soft, gentle voice just above a whisper and without strong emphasis on words",
-        "text": "Welcome to today's yin yoga session. Find your comfortable seated position.",
-        "time": 5
-    },
-    {
-        "voice": "",
-        "text": "",
-        "time": 30
-    },
-    {
-        "voice": "Speak as a yoga instructor running a relaxing session. Use a calm, encouraging tone with clear guidance",
-        "text": "Begin to fold forward from your hips, letting your spine round naturally.",
-        "time": 7
-    },
-    {
-        "voice": "",
-        "text": "",
-        "time": 180
-    },
-    {
-        "voice": "Speak as a yoga instructor running a relaxing session. Use a soft, gentle voice just above a whisper and without strong emphasis on words",
-        "text": "Slowly begin to roll up, vertebra by vertebra.",
-        "time": 5
-    }
-]
-```
 
 ## Voice Style Options
 
@@ -234,19 +219,6 @@ The buffer size determines how many segments are pre-processed:
 
 ### Custom Voices
 See the [Gemini TTS documentation](https://ai.google.dev/gemini-api/docs/speech-generation#voice-options) for the complete list of available voices.
-
-## File Structure
-
-```
-yoga/
-├── yoga_agent.py              # Main script
-├── requirements.txt           # Python dependencies
-├── README.md                 # This file
-└── sessions/                 # Yoga session files
-    ├── example_session.json  # Basic example session (JSON format)
-    ├── test_session.txt      # Legacy text format (deprecated)
-    └── yin_1.txt             # Legacy yin yoga session (deprecated)
-```
 
 ## License
 
